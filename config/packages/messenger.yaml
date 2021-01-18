@@ -1,0 +1,24 @@
+framework:
+    messenger:
+        # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
+        # failure_transport: failed
+
+        transports:
+            # https://symfony.com/doc/current/messenger.html#transport-configuration
+            async: enqueue://default?topic[name]=enqueue.app.default
+
+            # NOTE: Con esta configuración se envían los mensajes al Address "topic_prueba1" y a la cola cola_evento_1,
+            #   pero el consumidor lanza el siguiente mensaje de error cuando intenta consumir mensajes:
+            #   > Error "AMQ339016 Error creating subscription 600386f66cad97.92677465"
+            #     AMQ339027: Cannot create a subscriber on the durable subscription if the client-id of the connection is not set
+            #async: enqueue://default?queue[name]=cola_evento_1&topic[name]=topic_prueba1
+
+            # Ejemplo de configuración de un transporte
+            # artemis: enqueue://default?queue[name]=cola_eventos_1&topic[ name ]=topic_name&deliveryDelay=1800&delayStrategy=Enqueue\AmqpTools\RabbitMqDelayPluginDelayStrategy&timeToLive=3600&receiveTimeout=1000&priority=1
+
+            # failed: 'doctrine://default?queue_name=failed'
+            # sync: 'sync://'
+
+        routing:
+            # Route your messages to the transports
+            App\Message\Event1: async

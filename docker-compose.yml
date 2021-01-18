@@ -1,0 +1,48 @@
+version: '3.7'
+services:
+    artemis:
+        container_name: artemis
+        image: vromero/activemq-artemis:latest
+        environment:
+            - ARTEMIS_USERNAME=artemis
+            - ARTEMIS_PASSWORD=artemis
+        ports:
+            - 8161:8161
+            # JMX Exporter
+            - 9404:9404
+            # Netty
+            - 9876:9876
+            # Port for CORE,MQTT,AMQP,HORNETQ,STOMP,OPENWIRE
+            - 61616:61616
+            # Port for HORNETQ,STOMP
+            - 5445:5445
+            # Port for AMQP
+            - 5672:5672
+            # Port for MQTT
+            - 1883:1883
+            #Port for STOMP
+            - 61613:61613
+
+    php:
+        container_name: php
+        #image: notideh/php-java-node:7.2.34-8-8.16
+        build:
+            context: docker/build/php-7.4/
+            dockerfile: Dockerfile
+        volumes:
+            - .:/var/www/html/:rw
+#            - ./docker/php/log/php-fpm:/var/log/php-fpm:rw
+#            - ./docker/ssh/:/var/www/.ssh
+            - ./docker/php/conf/30-custom.ini:/usr/local/etc/php/conf.d/30-custom.ini
+#            - /home/$USER/.gitconfig:/var/www/.gitconfig:rw
+#            - /home/$USER/.git-credentials:/var/www/.git-credentials:rw
+            - /home/$USER/.composer:/var/www/.composer/:rw
+#            - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt
+#            - /etc/hosts:/etc/hosts
+        user: www-data
+        ports:
+            - 127.0.0.1:8041:8041
+        env_file:
+            - .env
+            - .env.local
+#        command: symfony serve --dir=public --port=8041 --force-php-discovery

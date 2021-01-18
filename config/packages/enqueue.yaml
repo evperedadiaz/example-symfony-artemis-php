@@ -1,0 +1,16 @@
+enqueue:
+    default:
+        transport: '%env(resolve:ENQUEUE_DSN)%'
+        client:
+#            traceable_producer: true
+            prefix: 'prueba'
+            separator: ::
+            app_name: ''
+            router_topic: 'cola_evento_1' # lo usa el producer
+            router_queue: 'cola_evento_1'  # lo usa el receiber
+            router_processor: App\MessageSubscriber\Event1Subscriber
+#            redelivered_delay_time: 0
+#            default_queue: default
+
+            # The array contains driver specific options
+            driver_options: [ ]
